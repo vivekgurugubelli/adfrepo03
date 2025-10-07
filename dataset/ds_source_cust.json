@@ -1,0 +1,17 @@
+{
+	"name": "ds_source_cust",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "cust"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

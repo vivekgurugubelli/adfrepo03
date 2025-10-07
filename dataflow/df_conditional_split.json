@@ -1,0 +1,143 @@
+{
+	"name": "df_conditional_split",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_datafiles_ip_parquet",
+						"type": "DatasetReference"
+					},
+					"name": "srcEmployee"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "snkemp10"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "snkemp20"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "snkemp30"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "snkyear1980"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sinkemp1980"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmployeeNO as integer,",
+				"          ENAME as string,",
+				"          JOB as string,",
+				"          MGR as integer,",
+				"          HIREDATE as date,",
+				"          SAL as decimal(19,4),",
+				"          COMM as decimal(19,4),",
+				"          DepartmentNO as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> srcEmployee",
+				"srcEmployee split(DepartmentNO==10,",
+				"     DepartmentNO==20,",
+				"     DepartmentNO==30,",
+				"     HIREDATE >= toDate('1981-01-01') && HIREDATE < toDate('1982-01-01'),",
+				"     HIREDATE >= toDate('1980-01-01') && HIREDATE < toDate('1981-01-01'),",
+				"     disjoint: false) ~> split1@(department10, department20, Department30, year1981, year1980, default)",
+				"split1@department10 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp_10',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> snkemp10",
+				"split1@department20 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp_20',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> snkemp20",
+				"split1@Department30 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'avro',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp_30',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> snkemp30",
+				"split1@year1981 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp1980',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> snkyear1980",
+				"split1@year1980 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp1981',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkemp1980"
+			]
+		}
+	}
+}

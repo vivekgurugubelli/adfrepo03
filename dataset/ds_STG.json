@@ -1,0 +1,17 @@
+{
+	"name": "ds_STG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azure_sql_server_STG",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

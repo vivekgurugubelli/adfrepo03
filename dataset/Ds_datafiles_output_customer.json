@@ -1,0 +1,25 @@
+{
+	"name": "Ds_datafiles_output_customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_vivekadls1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "customer.csv",
+				"folderPath": "output1",
+				"fileSystem": "datafiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

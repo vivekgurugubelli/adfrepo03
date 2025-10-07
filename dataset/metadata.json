@@ -1,0 +1,27 @@
+{
+	"name": "metadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServer1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "DepartmentNO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Dname",
+				"type": "varchar"
+			},
+			{
+				"name": "Location",
+				"type": "varchar"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

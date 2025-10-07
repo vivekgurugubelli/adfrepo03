@@ -1,0 +1,9 @@
+{
+	"name": "adfvivek1",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "83b74138-268e-4cb2-a0aa-66df0d96cdbd",
+		"tenantId": "2da046e5-1b94-492e-a588-2d0730e664cc"
+	}
+}

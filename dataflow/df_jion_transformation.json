@@ -1,0 +1,89 @@
+{
+	"name": "df_jion_transformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_datafiles_input_employee",
+						"type": "DatasetReference"
+					},
+					"name": "srcEmp"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "srcDepartment"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adls_vivekadls1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmployeeNO as short,",
+				"          ENAME as string,",
+				"          JOB as string,",
+				"          MGR as short,",
+				"          HIREDATE as date,",
+				"          SAL as double,",
+				"          COMM as double,",
+				"          DepartmentNO as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcEmp",
+				"source(output(",
+				"          DepartmentNO as short,",
+				"          DNAME as string,",
+				"          LOC as string",
+				"     ),",
+				"     useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'input',",
+				"     fileName: 'department.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '',",
+				"     columnNamesAsHeader: true) ~> srcDepartment",
+				"srcEmp, srcDepartment join(srcEmp@DepartmentNO == srcDepartment@DepartmentNO,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delimited',",
+				"     fileSystem: 'datafiles',",
+				"     folderPath: 'output/emp_jion',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '',",
+				"     columnNamesAsHeader: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

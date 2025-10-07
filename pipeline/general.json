@@ -1,0 +1,32 @@
+{
+	"name": "general",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "filename",
+					"value": {
+						"value": "@substring(\n    'customer.csv',\n    indexOf('customer.csv','.'),\n    sub(length('customer.csv'), indexOf('customer.csv','.'))\n)\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"filename": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-29T14:32:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

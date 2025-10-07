@@ -1,0 +1,25 @@
+{
+	"name": "ds_datafiles_input_customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_vivekblob123",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "customer.csv",
+				"folderPath": "input",
+				"container": "datafiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
