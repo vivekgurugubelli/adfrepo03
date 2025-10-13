@@ -19,7 +19,15 @@
 					"name": "trgCustomer"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "SqlServer1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "srcSelect"
@@ -32,6 +40,21 @@
 				},
 				{
 					"name": "split1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -82,7 +105,38 @@
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookup1",
 				"lookup1 split(isNull(Trg_customerid),",
-				"     disjoint: false) ~> split1@(NewRecords, ExistedRecords)"
+				"     disjoint: false) ~> split1@(NewRecords, ExistedRecords)",
+				"split1@NewRecords select(mapColumn(",
+				"          customerid = Src_customerid,",
+				"          customername = Src_customername,",
+				"          location = Src_location,",
+				"          sales = Src_sales",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@ExistedRecords filter(Src_customername!=Trg_customername|| Src_location!=Trg_location|| Src_sales!=Trg_sales) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          customerid = Src_customerid,",
+				"          customername = Src_customername,",
+				"          location = Src_location,",
+				"          sales = Src_sales",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1, select2 union(byName: true)~> union1",
+				"union1 derive(StartDate = currentUTC()) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'customer',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
