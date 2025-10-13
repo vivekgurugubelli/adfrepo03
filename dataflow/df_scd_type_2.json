@@ -142,7 +142,7 @@
 				"select1, select2 union(byName: true)~> union1",
 				"union1 derive(StartDate = currentUTC()) ~> derivedColumn1",
 				"filter1 select(mapColumn(",
-				"          Trg_customerkey",
+				"          customerkey = Trg_customerkey",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select3",
