@@ -1,0 +1,89 @@
+{
+	"name": "df_scd_type_2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_Sql_Server_source",
+						"type": "LinkedServiceReference"
+					},
+					"name": "srcCustomer"
+				},
+				{
+					"linkedService": {
+						"referenceName": "SqlServer1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "trgCustomer"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "srcSelect"
+				},
+				{
+					"name": "trgSelect"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customerid as integer,",
+				"          customername as string,",
+				"          location as string,",
+				"          sales as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'query',",
+				"     store: 'sqlserver',",
+				"     query: 'select \\n     customerid,\\n     customername,\\n     location,\\n    sales\\nfrom customer',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> srcCustomer",
+				"source(output(",
+				"          customerkey as integer,",
+				"          customerid as integer,",
+				"          customername as string,",
+				"          location as string,",
+				"          sales as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'query',",
+				"     store: 'sqlserver',",
+				"     query: 'select \\n    customerkey,\\n     customerid,\\n     customername,\\n     location,\\n     sales\\nfrom customer\\nwhere enddate is null',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> trgCustomer",
+				"srcCustomer select(mapColumn(",
+				"          Src_customerid = customerid,",
+				"          Src_customername = customername,",
+				"          Src_location = location,",
+				"          Src_sales = sales",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> srcSelect",
+				"trgCustomer select(mapColumn(",
+				"          Trg_customerkey = customerkey,",
+				"          Trg_customerid = customerid,",
+				"          Trg_customername = customername,",
+				"          Trg_location = location,",
+				"          Trg_sales = sales",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> trgSelect",
+				"srcSelect, trgSelect lookup(Src_customerid == Trg_customerid,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 split(isNull(Trg_customerid),",
+				"     disjoint: false) ~> split1@(NewRecords, ExistedRecords)"
+			]
+		}
+	}
+}
