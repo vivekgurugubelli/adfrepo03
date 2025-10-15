@@ -159,7 +159,14 @@
 				"     deletable: false,",
 				"     upsertable: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          customerid,",
+				"          customername,",
+				"          location,",
+				"          sales,",
+				"          StartDate",
+				"     )) ~> sink1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
@@ -172,7 +179,11 @@
 				"     upsertable: false,",
 				"     keys:['customerkey'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          customerkey,",
+				"          EndDate",
+				"     )) ~> sink2"
 			]
 		}
 	}
